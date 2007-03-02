@@ -1,5 +1,6 @@
 package File::Finder::Steps;
-our $VERSION = do { require File::Finder; $File::Finder::VERSION };
+
+our $VERSION = 0.51;
 
 use Carp qw(croak);
 
@@ -622,6 +623,30 @@ sub ffr {
   return $their_wanted;
 }
 
+=item contains(pattern)
+
+True if the file contains C<pattern> (either a literal string
+treated as a regex, or a true regex object).
+
+  my $plugh_files = File::Finder->type('f')->contains(qr/plugh/);
+
+Searching is performed on a line-by-line basis, respecting the
+current value of C<$/>.
+
+=cut
+
+sub contains {
+  my $self = shift;
+  my $pat = shift;
+  return sub {
+    open my $f, "<$_" or return 0;
+    while (<$f>) {
+      return 1 if /$pat/;
+    }
+    return 0;
+  };
+}
+
 =back
 
 =head2 EXTENDING
@@ -640,7 +665,7 @@ again as method calls against the C<File::Finder> object.  No
 additional parameters are passed.  However, the normal C<wanted>
 values are available, such as C<$_>, C<$File::Find::name>, and so on.
 The C<_> pseudo-handle has been set properly, so you can safely
-use
+use C<-X> filetests and C<stat> against the pseudo-handle.
 The routine is expected to return a true/false value, which becomes
 the value of the step.
 

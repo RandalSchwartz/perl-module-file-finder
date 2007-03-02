@@ -1,6 +1,11 @@
 Revision history for Perl extension File::Finder.
 
-0.50
+0.51 Wed Oct  6 18:13:37 PDT 2004
+	- Add stat(_) validator, stat $_ if not valid
+	- Fix tests related to decimal permission values
+	- added File::Find::Steps::contains (suggested by brian d foy)
+
+0.50  Wed Oct  6 10:04:10 PDT 2004
 	- Set $File::Find::dont_use_nlink rather than stat($_) in _run
 	  Recommended by PerlMonk tye
 	- refactored File::Find::Steps separately, and documented it

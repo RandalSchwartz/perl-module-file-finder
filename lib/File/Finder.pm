@@ -4,21 +4,11 @@ use 5.006;
 use strict;
 use warnings;
 
-require Exporter;
+use base qw(Exporter);
 
-our @ISA = qw(Exporter);
+## no exports
 
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	
-);
-
-our $VERSION = '0.50';
+our $VERSION = '0.51';
 
 use Carp qw(croak);
 
@@ -91,6 +81,9 @@ $File::Find::dont_use_nlink = 1;
 sub _run {
   my $self = shift;
 
+  my @stat;
+  @stat = stat if defined $_;
+
   my @state = (1);
   ## $state[-1]:
   ## if 2: we're in a true state, but we've just seen a NOT
@@ -99,6 +92,13 @@ sub _run {
   ## if -1: we're in a "skipping" state (true OR ...[here]...)
 
   for my $step(@{$self->{steps}}) {
+
+    ## verify underscore handle is good:
+    if (@stat) {
+      my @cache_stat = stat _;
+      stat unless "@stat" eq "@cache_stat";
+    }
+
     if (ref $step) {		# coderef
       if ($state[-1] >= 1) {	# true state
 	if ($self->$step) {	# coderef ran returning true

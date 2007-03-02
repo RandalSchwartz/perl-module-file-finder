@@ -16,37 +16,56 @@ sub fin {
 
 eq_set([File::Finder->in(qw(.))], [fin(sub { 1 }, '.')], 'all names');
 
-eq_set([File::Finder->name(qr/\t$/)->in(qw(.))],
+eq_set([File::Finder->name(qr/\.t$/)->in(qw(.))],
        [fin(sub { /\.t$/ }, '.')],
-       'all files named *.t');
+       'all files named *.t via regex');
 
-eq_set([File::Finder->perm('+444')->in(qw(.))],
+eq_set([File::Finder->name('*.t')->in(qw(.))],
+       [fin(sub { /\.t$/ }, '.')],
+       'all files named *.t via glob');
+
+eq_set([File::Finder->perm('+0444')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0444 }, '.')],
        'readable by someone');
 
-eq_set([File::Finder->perm('-444')->in(qw(.))],
+eq_set([File::Finder->perm('-0444')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0444 == 0444 }, '.')],
        'readable by everyone');
 
-eq_set([File::Finder->perm('+222')->in(qw(.))],
+eq_set([File::Finder->perm('+0222')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0222 }, '.')],
        'writeable by someone');
 
-eq_set([File::Finder->perm('+111')->in(qw(.))],
+eq_set([File::Finder->perm('+0111')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0111 }, '.')],
        'executable by someone');
 
-eq_set([File::Finder->perm('644')->in(qw(.))],
+eq_set([File::Finder->perm('0644')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0777 == 0644 }, '.')],
        'mode 644');
 
-eq_set([File::Finder->perm('755')->in(qw(.))],
+eq_set([File::Finder->perm('0644')->in(qw(.))],
+       [fin(sub { (stat($_))[2] & 0777 == 0644 }, '.')],
+       'mode 644');
+
+eq_set([File::Finder->perm('0755')->in(qw(.))],
        [fin(sub { (stat($_))[2] & 0777 == 0755 }, '.')],
        'mode 755');
+
+{
+  my $dirperm = (stat ".")[2] & 07777;
+  eq_set([File::Finder->perm($dirperm)->in(qw(.))],
+	 [fin(sub { ((stat($_))[2] & 07777) == $dirperm }, '.')],
+	 'mode same as current directory');
+}
 
 eq_set([File::Finder->type('f')->in(qw(.))],
        [fin(sub { -f }, '.')],
        'all files');
+
+eq_set([File::Finder->eval(sub { stat('/') })->type('f')->in(qw(.))],
+       [fin(sub { -f }, '.')],
+       'all files even after messing with _ pseudo handle');
 
 eq_set([File::Finder->user($<)->in(qw(.))],
        [fin(sub { -o }, '.')],
@@ -95,3 +114,8 @@ eq_set([File::Finder->size('-10c')->in(qw(.))],
 eq_set([File::Finder->size('+10c')->in(qw(.))],
        [fin(sub { -s $_ > 10 }, '.')],
        'more than 10 bytes');
+
+eq_set([File::Finder->contains('AvErYuNlIkElYsTrInG')->in(qw(.))],
+       ["__FILE__"],
+       'files with a very unlikely string');
+
