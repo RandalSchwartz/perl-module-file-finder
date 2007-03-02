@@ -8,7 +8,7 @@ use base qw(Exporter);
 
 ## no exports
 
-our $VERSION = '0.52';
+our $VERSION = '0.53';
 
 use Carp qw(croak);
 
@@ -367,7 +367,7 @@ L<File::Finder::Steps>, L<File::Find>, L<find2perl>, L<File::Find::Rule>
 
 =head1 BUGS
 
-None known yet.
+Please report bugs to C<bug-File-Finder@rt.cpan.org>.
 
 =head1 AUTHOR
 

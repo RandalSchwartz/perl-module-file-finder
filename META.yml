@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         File-Finder
-version:      0.52
+version:      0.53
 version_from: lib/File/Finder.pm
 installdirs:  site
 requires:
@@ -9,4 +9,4 @@ requires:
     Text::Glob:                    0
 
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.26
+generated_by: ExtUtils::MakeMaker version 6.27

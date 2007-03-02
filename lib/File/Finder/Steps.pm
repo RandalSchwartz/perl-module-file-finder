@@ -1,6 +1,8 @@
 package File::Finder::Steps;
 
-our $VERSION = 0.51;
+our $VERSION = 0.53;
+
+use strict;
 
 use Carp qw(croak);
 

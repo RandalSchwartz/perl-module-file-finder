@@ -27,6 +27,4 @@ while (my ($function,$op) = each %status) {
       _n($prefix, $n, $op->());
     };
   }
-} 
-
-## add bug reporting to bug-File-Finder@rt.cpan.org
+}
