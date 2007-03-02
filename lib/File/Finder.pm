@@ -18,7 +18,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Carp qw(croak);
 
@@ -49,6 +49,8 @@ sub as_options {
 
 sub in {
   my $self = _force_object(shift);
+
+  ## this must return count in a scalar context
   $self->collect(sub { $File::Find::name }, @_);
 }
 
@@ -62,6 +64,7 @@ sub collect {
   require File::Find;
   File::Find::find($self_store->as_options, @_);
 
+  ## this must return count in a scalar context
   return @result;
 }
 
@@ -82,13 +85,17 @@ sub _clone {
 
 sub _run {
   my $self = shift;
-  my @state = (1);
 
+  my @state = (1);
   ## $state[-1]:
   ## if 2: we're in a true state, but we've just seen a NOT
   ## if 1: we're in a true state
   ## if 0: we're in a false state
   ## if -1: we're in a "skipping" state (true OR ...[here]...)
+
+  ## I thought File::Find promised thus, but apparently not:
+  defined $_ and lstat($_);	# ignore results
+  ## this sets the "_" filehandle properly for our tests
 
   for my $step(@{$self->{steps}}) {
     if (ref $step) {		# coderef
@@ -126,6 +133,13 @@ sub _run {
 	} else {
 	  $state[-1]--;		# 2 => 1, 1 => 0
 	}
+      }
+    } elsif ($step eq "comma") {
+      croak "not before comma" if $state[-1] > 1;
+      if (@state < 2) {		# not in parens
+	$state[-1] = 1;		# reset to true
+      } else {			# in parens, reset as if start of parens
+	$state[-1] = (($state[-2] >= 1) ? 1 : -1);
       }
     } elsif ($step eq "not") {
       # -1 => -1, 0 => 0, 1 => 2, 2 => 1
@@ -169,6 +183,7 @@ BEGIN { *begin = \&left; }
 sub right { return "right" }
 BEGIN { *end = \&right; }
 sub not { return "not" }
+sub comma { return "comma" }	# gnu extension
 
 ## The remaining methods get called with $self as the first parameter,
 ## and can perform compile-time operations (like computing closure
@@ -212,7 +227,7 @@ sub perm {
     return sub {
       ((stat _)[2] & $perm) == $perm;
     };
-  } elsif ($perm =~ s/^\+//) {
+  } elsif ($perm =~ s/^\+//) {	# gnu extension
     $perm = oct($perm) if $perm =~ /^0/;
     return sub {
       ((stat _)[2] & $perm);
@@ -290,6 +305,25 @@ sub nogroup {
     CORE::not defined _gid_to_group((stat _)[5]);
   }
 }
+
+## from ovid:
+#  my %status = (
+#  	      links => sub { (stat(_))[3] },
+#  	      inum => sub { (stat(_))[1] },
+#  	      atime => sub { int(-A _) },
+#  	      mtime => sub { int(-M _) },
+#  	      ctime => sub { int(-C _) },
+#  	     );
+#  while (my ($function,$op) = each %status) {
+#    no strict 'refs';
+#    *$function = sub {
+#      my $self = shift;
+#      my ($prefix, $n) = shift =~ qr/^(\+|-|)(.*)/;
+#      return sub {
+#        _n($prefix, $n, $op->());
+#      };
+#    }
+#  } 
 
 sub links {
   my $self = shift;
@@ -648,9 +682,7 @@ Besides passing the constructed C<File::Finder> object to
 C<File::Finder::find> directly as a C<wanted> routine or an options
 hash, you can also call C<find> implictly, with C<in>.  C<in> provides
 a list of starting points, and returns all filenames that match the
-criteria.  (At the moment, in a scalar context it also returns the
-number of matches, but I'm not sure I want to promise that for the
-future.)
+criteria.
 
 For example, a list of all names in /tmp can be generated simply with:
 
@@ -775,6 +807,17 @@ Of course, this is the I<find> command's idiom of:
 =item false
 
 Always returns false.
+
+=item comma
+
+Like GNU I<find>'s ",".  The result of the expression (or
+subexpression if in parens) up to this point is discarded, and
+execution continues afresh.  Useful when a part of the expression is
+needed for its side effects, but shouldn't affect the rest of the
+"and"-ed chain.
+
+  # list all files and dirs, but don't descend into CVS dir contents:
+  File::Finder->type('d')->name('CVS')->prune->comma->ls->in('.');
 
 =item follow
 

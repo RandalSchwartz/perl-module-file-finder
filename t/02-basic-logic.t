@@ -273,5 +273,135 @@ isa_ok(my $f = File::Finder->new, "File::Finder");
     ->left->or->right
     ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
       ->as_wanted->();
-  is($r, 1, 'not ( skipping ) = true');
+  is($r, 1, 'not ( skipping ) = false');
+}
+
+{
+  my $r;
+  $f->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->as_wanted->();
+  is($r, 2, 'true , = true');
+}
+
+{
+  my $r;
+  $f->false
+    ->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->as_wanted->();
+  is($r, 2, 'false , = true');
+}
+
+{
+  my $r;
+  $f->or->true
+    ->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->as_wanted->();
+  is($r, 2, 'skipping , = true');
+}
+
+### true
+
+{
+  my $r;
+  $f
+    ->left
+    ->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, 2, 'true ( true , ... = true');
+}
+
+{
+  my $r;
+  $f->eval(sub { 0 })
+    ->left
+    ->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'false ( true , ...  = skipping');
+}
+
+{
+  my $r;
+  $f->or
+    ->left
+    ->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'skipping ( true , ... = skipping');
+}
+
+### false
+
+{
+  my $r;
+  $f
+    ->left
+    ->false->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, 2, 'true ( false , ... = true');
+}
+
+{
+  my $r;
+  $f->eval(sub { 0 })
+    ->left
+    ->false->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'false ( false , ...  = skipping');
+}
+
+{
+  my $r;
+  $f->or
+    ->left
+    ->false->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'skipping ( false , ... = skipping');
+}
+
+### skipping
+{
+  my $r;
+  $f
+    ->left
+    ->or->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, 2, 'true ( skipping , ... = true');
+}
+
+{
+  my $r;
+  $f->eval(sub { 0 })
+    ->left
+    ->or->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'false ( skipping , ...  = skipping');
+}
+
+{
+  my $r;
+  $f->or
+    ->left
+    ->or->comma
+    ->eval(sub {$r += 2})->or->eval(sub {$r += 1})
+      ->right
+      ->as_wanted->();
+  is($r, undef, 'skipping ( skipping , ... = skipping');
 }
