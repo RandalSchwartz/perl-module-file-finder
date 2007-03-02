@@ -1,5 +1,10 @@
 Revision history for Perl extension File::Finder.
 
+0.03  Fri Dec 19 16:20:52 PST 2003
+
+	- Add ->ffr(File::Find::Rule->...)
+	  "You will be assimilated! Resistance is Futile!"
+
 0.02  Thu Dec 18 14:35:45 PST 2003
 
 	- Added ->comma method

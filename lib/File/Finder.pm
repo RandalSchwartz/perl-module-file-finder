@@ -18,7 +18,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Carp qw(croak);
 
@@ -574,6 +574,30 @@ BEGIN {
   }
 }
 
+## heh heh
+
+sub ffr {
+  my $self = shift;
+  my $ffr_object = shift;
+
+  my $their_wanted;
+
+  no warnings;
+  local *File::Find::find = sub {
+    my ($options) = @_;
+    for (my ($k, $v) = each %$options) {
+      if ($k eq "wanted") {
+  	$their_wanted = $v;
+      } else {
+  	$self->{options}->{$k} = $v;
+      }
+    }
+  };
+  $ffr_object->in("/DUMMY");	# boom!
+  croak "no wanted defined" unless defined $their_wanted;
+  return $their_wanted;
+}
+
 1;
 __END__
 
@@ -984,6 +1008,21 @@ Not yet implemented.
 =item [n]cpio
 
 Not yet implemented.
+
+=item ffr($ffr_object)
+
+Incorporate a C<File::Find::Rule> object as a step. Note that this
+must be a rule object, and not a result, so don't call or pass C<in>.
+For example, using C<File::Find::Rule::ImageSize> to define a
+predicate for image files that are bigger than a megapixel in my
+friends folder, I get:
+
+  require File::Finder;
+  require File::Find::Rule;
+  require File::Find::Rule::ImageSize;
+  my $ffr = File::Find::Rule->file->image_x('>1000')->image_y('>1000');
+  my @big_friends = File::Finder->ffr($ffr)
+    ->in("/Users/merlyn/Pictures/Sorted/Friends");
 
 =back
 
