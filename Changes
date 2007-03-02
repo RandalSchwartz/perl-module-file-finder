@@ -1,0 +1,6 @@
+Revision history for Perl extension File::Finder.
+
+0.01  Tue Dec 16 08:50:16 2003
+	- original version; created by h2xs 1.23 with options
+		-b5.6.0 -AXn File::Finder
+

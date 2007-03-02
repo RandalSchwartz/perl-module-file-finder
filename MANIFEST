@@ -1,0 +1,9 @@
+Changes
+lib/File/Finder.pm
+Makefile.PL
+MANIFEST
+README
+t/01-core.t
+t/02-basic-logic.t
+t/03-options.t
+META.yml                                 Module meta-data (added by MakeMaker)
