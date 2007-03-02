@@ -1,5 +1,9 @@
 Revision history for Perl extension File::Finder.
 
+0.52 [DATE]
+	- Fix all tests in t/05-steps.t!  Totally blown
+	- Add Test::Pod and Test::Pod::Coverage for better Kwalitee
+
 0.51 Wed Oct  6 18:13:37 PDT 2004
 	- Add stat(_) validator, stat $_ if not valid
 	- Fix tests related to decimal permission values

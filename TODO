@@ -7,6 +7,9 @@
 use File::Finder qw(contains foo bar);
 # pulls in File::Finder::Plugin::contains etc
 
+## oval: like eval, but operates on open file handle
+## (like a more general "contains")
+
 ## from ovid:
 my %status = (
 	      links => sub { (stat(_))[3] },
@@ -26,3 +29,4 @@ while (my ($function,$op) = each %status) {
   }
 } 
 
+## add bug reporting to bug-File-Finder@rt.cpan.org

@@ -97,6 +97,14 @@ a fatal error.
 sub right { return "right" }
 BEGIN { *end = \&right; }
 
+=item begin
+
+Alias for C<left>.
+
+=item end
+
+Alias for C<right>.
+
 =item not
 
 Like I<find>'s C<!>.  Prefix operator, can be placed in front of

@@ -12,4 +12,7 @@ t/03-options.t
 t/04-ffr.t
 t/05-steps.t
 t/99-test-distro.t
+t/99-test-pod-coverage.t
+t/99-test-pod.t
+t/cprove
 TODO

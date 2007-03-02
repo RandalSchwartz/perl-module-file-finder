@@ -1,12 +1,7 @@
-## ignore my previous distro files
-
-^File-Finder.*tar\.gz$
-
-### standard list below ###
-
 # Avoid version control files.
 \bRCS\b
 \bCVS\b
+\bSCCS\b
 ,v$
 \B\.svn\b
 
@@ -15,8 +10,9 @@
 \bMakefile$
 \bblib/
 \bMakeMaker-\d
+\bpm_to_blib\.ts$
 \bpm_to_blib$
-\bblibdirs$
+\bblibdirs\.ts$         # 6.18 through 6.25 generated this
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
@@ -27,5 +23,10 @@
 \.old$
 \#$
 \b\.#
+\.bak$
 
-^cover_db/
+# Avoid Devel::Cover files.
+\bcover_db\b
+
+### LOCAL ###
+^OLD/
