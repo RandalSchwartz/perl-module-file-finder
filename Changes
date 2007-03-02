@@ -1,5 +1,11 @@
 Revision history for Perl extension File::Finder.
 
+0.50
+	- Set $File::Find::dont_use_nlink rather than stat($_) in _run
+	  Recommended by PerlMonk tye
+	- refactored File::Find::Steps separately, and documented it
+	- added TODO
+
 0.03  Fri Dec 19 16:20:52 PST 2003
 
 	- Add ->ffr(File::Find::Rule->...)

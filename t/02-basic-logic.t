@@ -1,10 +1,6 @@
 #! perl
 use Test::More 'no_plan';
 
-# use File::Find;
-# use Data::Dumper;
-# $Data::Dumper::Deparse = 1;
-
 BEGIN { use_ok('File::Finder') }
 
 isa_ok(my $f = File::Finder->new, "File::Finder");
@@ -302,8 +298,6 @@ isa_ok(my $f = File::Finder->new, "File::Finder");
   is($r, 2, 'skipping , = true');
 }
 
-### true
-
 {
   my $r;
   $f
@@ -336,8 +330,6 @@ isa_ok(my $f = File::Finder->new, "File::Finder");
       ->as_wanted->();
   is($r, undef, 'skipping ( true , ... = skipping');
 }
-
-### false
 
 {
   my $r;
@@ -372,7 +364,6 @@ isa_ok(my $f = File::Finder->new, "File::Finder");
   is($r, undef, 'skipping ( false , ... = skipping');
 }
 
-### skipping
 {
   my $r;
   $f
