@@ -10,4 +10,9 @@ WriteMakefile(
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/File/Finder.pm', # retrieve abstract from module
        AUTHOR         => 'Randal L. Schwartz <merlyn@stonehenge.com>') : ()),
+    META_MERGE => {
+        resources => {
+            repository => 'https://github.com/RandalSchwartz/perl-module-file-finder',
+        },
+    },
 );
