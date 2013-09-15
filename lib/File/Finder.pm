@@ -257,7 +257,7 @@ searching.  The C<depth> step flags this in the options as well:
 
   my $files_depth_print = $files->depth->print;
 
-However, the C<File::Finder> object needs to be told explictly to
+However, the C<File::Finder> object needs to be told explicitly to
 generate an options hash for C<File::Find::find> to pass this
 information along:
 
@@ -285,7 +285,7 @@ nesting.
 
 Besides passing the constructed C<File::Finder> object to
 C<File::Finder::find> directly as a C<wanted> routine or an options
-hash, you can also call C<find> implictly, with C<in>.  C<in> provides
+hash, you can also call C<find> implicitly, with C<in>.  C<in> provides
 a list of starting points, and returns all filenames that match the
 criteria.
 
