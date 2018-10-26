@@ -65,6 +65,8 @@ is_deeply([File::Finder->eval(sub { stat('/') })->type('f')->in(qw(.))],
 	  [fin(sub { -f }, '.')],
 	  'all files even after messing with _ pseudo handle');
 
+SKIP: {
+skip 'user/nouser/etc. not supported on Windows', 8 if $^O eq 'MSWin32';
 is_deeply([File::Finder->user($<)->in(qw(.))],
 	  [fin(sub { -o }, '.')],
 	  'owned');
@@ -96,6 +98,7 @@ is_deeply([File::Finder->nogroup->in(qw(.))],
 is_deeply([File::Finder->not->nogroup->in(qw(.))],
 	  [fin(sub { defined getgrgid((stat)[5]) }, '.')],
 	  'not nogroup');
+}
 
 is_deeply([File::Finder->links('-2')->in(qw(.))],
 	  [fin(sub { (stat)[3] < 2 }, '.')],
@@ -114,5 +117,5 @@ is_deeply([File::Finder->size('+10c')->in(qw(.))],
 	  'more than 10 bytes');
 
 is_deeply([File::Finder->contains('AvErYuNlIkElYsTrInG')->in(qw(.))],
-	  ["./" . __FILE__],
+	  [fin(sub { /05-steps\.t$/ }, '.')],
 	  'files with a very unlikely string');
