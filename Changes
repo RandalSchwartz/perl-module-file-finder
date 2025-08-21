@@ -1,5 +1,15 @@
 Revision history for Perl extension File::Finder.
 
+1.01  2025-08-22
+    - Add missing Changes entry for 1.00
+
+1.00  2025-08-21
+    - Promote File::Finder to a stable 1.0.0 release.
+    - Document and enforce Win32 limitations: croak for user(), nouser(),
+      group(), nogroup(), and ls() on MSWin32.
+    - POD clean-ups and example tweaks.
+    - Bump versions in File::Finder and File::Finder::Steps; refresh tests.
+
 0.53 Fri Apr  8 12:45:22 PDT 2005
      - added "use strict" to File::Finder::Steps
      - added bug reporting address
