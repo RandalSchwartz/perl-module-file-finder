@@ -1,5 +1,8 @@
 Revision history for Perl extension File::Finder.
 
+1.0.1  Thu Aug 21 10:00:00 2025 -0700
+    - Updated Changes file for 1.0.0 release.
+
 1.0.0  Wed Aug 20 15:23:42 2025 -0700
     - Added Windows compatibility fixes for user, group, nouser, nogroup, and ls methods.
     - Updated POD documentation.
